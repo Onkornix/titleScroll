@@ -6,6 +6,9 @@ If the song title is over 30 characters long it will scroll right and left to sh
 
 > ```max_length``` can be changed by altering the variable declaration in ```src/main.rs```
 
+## Demo
+![demo gif](https://github.com/Onkornix/titleScroll/blob/main/demo_gif1.gif)
+
 ## Requirements
 ```rust``` -> (https://www.rust-lang.org/tools/install)
 
