@@ -2,7 +2,6 @@ use std::process::Command;
 use std::thread::{sleep};
 use std::time;
 use std::fmt::Write;
-use std::io::ErrorKind::NotFound;
 
 enum Direction {
     Left,
@@ -10,10 +9,6 @@ enum Direction {
 }
 
 fn main() {
-
-    if !are_deps_working() {
-        return
-    }
 
     let max_length = 30;
 
@@ -120,22 +115,4 @@ fn get_title() -> String {
         }
     }
     title
-}
-
-fn are_deps_working() -> bool {
-    match Command::new("playerctl").status() {
-        Ok(_) => true,
-        Err(e) => {
-            match e.kind() {
-                NotFound => {
-                    println!("ERROR: playerctl is required but not found.");
-                    false
-                }
-                _ => {
-                    println!("ERROR: playerctl could not run for some reason.");
-                    false
-                }
-            }
-        }
-    }
 }
