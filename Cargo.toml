@@ -1,0 +1,6 @@
+[package]
+name = "song_title_scroller"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
