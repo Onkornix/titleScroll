@@ -4,7 +4,7 @@ This is a program that uses ```playerctl``` to fetch title metadata from media s
 
 If the song title is over 30 characters long it will scroll right and left to show the entire title.
 
-> ```max_length``` can be changed by altering the variable declaration in ```src/main.rs```
+> ```max_length``` can not be easily changed yet, sorry. You can try though :/
 
 ## Demo
 ![demo gif](https://github.com/Onkornix/titleScroll/blob/main/demo_gif1.gif)
