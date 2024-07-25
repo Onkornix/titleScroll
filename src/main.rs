@@ -1,16 +1,24 @@
 use std::process::Command;
-use std::thread::{sleep};
+use std::thread::sleep;
 use std::time;
 use std::fmt::Write;
+use clap::Parser;
 
 enum Direction {
     Left,
     Right
 }
+#[derive(Parser)]
+struct Args {
 
+    #[arg(short, long, default_value_t = 30)]
+    max_length: usize,
+
+}
 fn main() {
+    let args  = Args::parse();
 
-    let max_length = 30;
+    let max_length = args.max_length;
 
     loop {
         let title = get_title();
@@ -18,7 +26,7 @@ fn main() {
         let length = title.chars().count();
 
         if length > max_length {
-            scroll_loop(Direction::Right, &title);
+            scroll_loop(Direction::Right, &title, max_length);
 
             if title_change_check(&title) { continue }
 
@@ -26,7 +34,7 @@ fn main() {
 
             if title_change_check(&title) { continue }
 
-            scroll_loop(Direction::Left, &title);
+            scroll_loop(Direction::Left, &title, max_length);
 
             if title_change_check(&title) { continue }
 
@@ -38,7 +46,7 @@ fn main() {
     }
 }
 
-fn scroll_loop(direction: Direction, title: &String) {
+fn scroll_loop(direction: Direction, title: &String, max_length: usize) {
     let length = title.chars().count();
 
     let title_chars: Vec<char> = title
@@ -46,8 +54,8 @@ fn scroll_loop(direction: Direction, title: &String) {
         .collect();
 
     let mut current_section: (usize,usize) = match direction {
-        Direction::Left => (length - 30,length),
-        Direction::Right => (0,30)
+        Direction::Left => (length - max_length,length),
+        Direction::Right => (0,max_length)
     };
 
     loop {
