@@ -4,8 +4,6 @@ This is a program that uses ```playerctl``` to fetch title metadata from media s
 
 If the song title is over 30 characters long it will scroll right and left to show the entire title.
 
-> ```max_length``` can not be easily changed yet, sorry. You can try though :/
-
 ## Demo
 ![demo gif](https://github.com/Onkornix/titleScroll/blob/main/demo_gif1.gif)
 
@@ -22,9 +20,16 @@ If the song title is over 30 characters long it will scroll right and left to sh
 3. ```cargo build --release``` or ```rustc -o song_title_scroller src/main.rs```
 > if you used ```cargo build```, then the binary will be in ```target/release/song_title_scroller```
 
+## Arguments (WIP)
+```-m --max-length <MAX_LENGTH> [default: 30]```
+
 ## Usage
 In my case I am using Xmobar as my system bar which has the builtin command ```CommandReader``` which runs a program and continually displays it's stdout.
 
-You can use it by adding ```Run CommandReader "path/to/song_title_scroller" "alias"``` to your xmobarrc and putting the alias somewhere in your format section.
+You can use it by adding
+
+```Run CommandReader "path/to/song_title_scroller" "alias"```
+
+to your xmobarrc and putting the alias somewhere in your format section.
 
 if you don't use Xmobar, then I don't know the exact way to accomplish this. But there's probably a similar builtin that works the same as ```CommandReader```. Good luck!
