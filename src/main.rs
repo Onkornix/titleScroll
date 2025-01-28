@@ -1,22 +1,25 @@
+use clap::Parser;
+use std::fmt::Write;
 use std::process::Command;
 use std::thread::sleep;
 use std::time;
-use std::fmt::Write;
-use clap::Parser;
+use unicode_segmentation::UnicodeSegmentation;
+// Songs with problems:
+// Venom - Die Hard (12" Version)
+//
 
 enum Direction {
     Left,
-    Right
+    Right,
 }
 #[derive(Parser)]
 struct Args {
-
     #[arg(short, long, default_value_t = 30)]
     max_length: usize,
-
 }
+
 fn main() {
-    let args  = Args::parse();
+    let args = Args::parse();
 
     let max_length = args.max_length;
 
@@ -28,15 +31,21 @@ fn main() {
         if length > max_length {
             scroll_loop(Direction::Right, &title, max_length);
 
-            if title_change_check(&title) { continue }
+            if title_change_check(&title) {
+                continue;
+            }
 
             sleep(time::Duration::from_millis(3000));
 
-            if title_change_check(&title) { continue }
+            if title_change_check(&title) {
+                continue;
+            }
 
             scroll_loop(Direction::Left, &title, max_length);
 
-            if title_change_check(&title) { continue }
+            if title_change_check(&title) {
+                continue;
+            }
 
             sleep(time::Duration::from_millis(3000));
         } else {
@@ -49,13 +58,11 @@ fn main() {
 fn scroll_loop(direction: Direction, title: &String, max_length: usize) {
     let length = title.chars().count();
 
-    let title_chars: Vec<char> = title
-        .chars()
-        .collect();
+    let title_chars: Vec<char> = title.chars().collect();
 
-    let mut current_section: (usize,usize) = match direction {
-        Direction::Left => (length - max_length,length),
-        Direction::Right => (0,max_length)
+    let mut current_section: (usize, usize) = match direction {
+        Direction::Left => (length - max_length, length),
+        Direction::Right => (0, max_length),
     };
 
     loop {
@@ -71,12 +78,12 @@ fn scroll_loop(direction: Direction, title: &String, max_length: usize) {
         match direction {
             Direction::Left => {
                 if current_section.0 == 0 || title_change_check(&title) {
-                    break
+                    break;
                 }
             }
             Direction::Right => {
                 if current_section.1 == length || title_change_check(&title) {
-                    break
+                    break;
                 }
             }
         }
@@ -105,22 +112,35 @@ fn get_title() -> String {
         .expect("failed to run command")
         .stdout;
 
-
     let utf_8 = command_stdout.utf8_chunks();
     let mut title = String::new();
 
     for chunk in utf_8 {
-        for ch in chunk.valid().chars() {
-            if ['\\','\'','\n'].contains(&ch) {
-                continue
+        let mut i = 0;
+        let len = chunk.valid().graphemes(true).count() as i32;
+
+        for ch in chunk.valid().graphemes(true) {
+            if i == 0 {
+                i += 1;
+                continue;
             }
-            write!(&mut title, "{}", ch.escape_debug())
-                .expect("failed to write to title buffer");
+            if i >= len - 2 {
+                continue;
+            }
+            i += 1;
+
+            if ch == "\"" || ch == "\'" {
+                write!(&mut title, "{}", ch.trim_start()).expect("failed to write to title buffer");
+                continue;
+            }
+            write!(&mut title, "{}", ch.escape_debug()).expect("failed to write to title buffer");
+
         }
-        for _byte in chunk.invalid() {
-            write!(&mut title, "?")
-                .expect("failed to write to title buffer");
+        for _ in chunk.invalid() {
+            write!(&mut title, "?").expect("failed to write to title buffer");
         }
+
     }
     title
 }
+
